@@ -1,4 +1,4 @@
-```sql
+```postgresql
 SHOW hba_file;
 SHOW config_file;
 ```
@@ -6,7 +6,10 @@ SHOW config_file;
 docker container top streaming-primary 
 docker container top streaming-standby
 ```
-
+create a primary
+```shell
+docker compose up
+```
 create a standby volume
 ```shell
 docker volume create --name streaming-standby-pgdata
@@ -15,7 +18,7 @@ build the `streaming-standby` image
 ```shell
 docker build -t streaming-standby . --target standby
 ```
-do the pd_basebackup from primary to standby volume
+do the pg_basebackup from primary to standby volume
 ```shell
 docker run \
   --rm \
@@ -41,6 +44,7 @@ docker run \
   --network postgres-streaming-network \
   --name streaming-standby \
   -v streaming-standby-pgdata:/var/lib/postgresql/data \
+  -v streaming-postgres-archiver:/archiver \
   --health-cmd "pg_isready -U postgres || exit 1" \
     --health-interval 10s \
     --health-retries 5 \
@@ -48,4 +52,12 @@ docker run \
     --health-start-period 10s \
     streaming-standby \
       -c "config_file=/etc/postgresql/postgresql.standby.conf"
+```
+# Cleanup
+```shell
+docker compose down -v --remove-orphans
+docker container stop streaming-primary streaming-standby
+docker container rm streaming-primary streaming-standby
+docker network rm postgres-streaming-network
+docker volume rm streaming-standby-pgdata
 ```
