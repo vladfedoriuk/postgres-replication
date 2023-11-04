@@ -1,0 +1,40 @@
+services:
+  primary:
+    build:
+      target: primary
+    container_name: streaming-primary
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: primary
+    volumes:
+      - primary-pgdata:/var/lib/postgresql/data
+      - primary-archiver:/var/lib/postgresql/archiver
+      - ./scripts/init-primary.sh:/docker-entrypoint-initdb.d/init-primary.sh
+    command: [ "-c", "config_file=/etc/postgresql/postgresql.primary.conf", "-c", "hba_file=/etc/postgresql/pg_hba.primary.conf" ]
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        timeout: 5s
+        retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:7.8
+    container_name: streaming-pgadmin
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8083:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: example@mail.com
+      PGADMIN_DEFAULT_PASSWORD: example
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      primary:
+        condition: service_healthy
+volumes:
+  primary-pgdata:
+  primary-archiver:
+  pgadmin-data:
+
+networks:
+    default:
+        name: postgres-streaming-network
