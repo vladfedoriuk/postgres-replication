@@ -1,49 +1,48 @@
 services:
   primary:
     build:
-      target: primary
-    hostname: streaming-primary
-    container_name: postgres-replication-streaming-primary
+        target: primary
+    hostname: logical-primary
+    container_name: postgres-replication-logical-primary
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: primary
     volumes:
-      - archiver:/archiver
       - primary-pgdata:/var/lib/postgresql/data
+      - ./pg_hba.primary.conf:/etc/postgresql/pg_hba.primary.conf
       - ./scripts/init-primary.sh:/docker-entrypoint-initdb.d/init-primary.sh
-    command: [ "-c", "config_file=/etc/postgresql/postgresql.primary.conf", "-c", "hba_file=/etc/postgresql/pg_hba.primary.conf" ]
+    command: [ "-c", "config_file=/etc/postgresql/postgresql.logical.conf", "-c", "hba_file=/etc/postgresql/pg_hba.primary.conf" ]
     healthcheck:
         test: ["CMD-SHELL", "pg_isready -U postgres"]
         timeout: 5s
         retries: 5
         start_period: 5s
-    profiles:
-      - primary
 
   standby:
     build:
-      target: standby
-    hostname: streaming-standby
-    container_name: postgres-replication-streaming-standby
+        target: standby
+    hostname: logical-standby
+    container_name: postgres-replication-logical-standby
     restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: standby
     volumes:
       - standby-pgdata:/var/lib/postgresql/data
-      - archiver:/archiver
-    command: [ "-c", "config_file=/etc/postgresql/postgresql.standby.conf"]
+      - ./scripts/init-standby.sh:/docker-entrypoint-initdb.d/init-standby.sh
+    command: [ "-c", "config_file=/etc/postgresql/postgresql.logical.conf"]
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       timeout: 5s
       retries: 5
       start_period: 5s
-    profiles:
-      - standby
+    depends_on:
+      primary:
+        condition: service_healthy
 
 volumes:
-  archiver:
   primary-pgdata:
   standby-pgdata:
-    name: postgres-replication-streaming-standby-pgdata
-    external: true
+
 
 networks:
     default:

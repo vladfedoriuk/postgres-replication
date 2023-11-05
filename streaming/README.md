@@ -9,11 +9,11 @@ docker container top streaming-standby
 create a standby volume
 
 ```shell
-docker volume create --name postgres-streaming-standby-pgdata
+docker volume create --name postgres-replication-streaming-standby-pgdata
 ```
-build the `streaming-standby` image
+build the `postgres-replication-streaming-standby` image
 ```shell
-docker build -t postgres-streaming-standby . --target standby
+docker build -t postgres-replication-streaming-standby . --target standby
 ```
 create a primary
 ```shell
@@ -24,9 +24,9 @@ do the pg_basebackup from primary to standby volume
 docker run \
   --rm \
   -it \
-  -v postgres-streaming-standby-pgdata:/backup \
+  -v postgres-replication-streaming-standby-pgdata:/backup \
   --network postgres-replication-network \
-    postgres-streaming-standby \
+    postgres-replication-streaming-standby \
         pg_basebackup \
           --pgdata=/backup \
           --write-recovery-conf \
@@ -34,7 +34,7 @@ docker run \
           --checkpoint=fast \
           --slot=replicator_slot \
           --verbose \
-          --host=primary \
+          --host=streaming-primary \
           --port=5432 \
           --username=replicator \
           --password
@@ -50,16 +50,16 @@ docker compose --profile primary down
 ```
 Promote the standby (exec as `postgres` user)
 ```shell
-docker exec -it postgres-streaming-standby \
+docker exec -it postgres-replication-streaming-standby \
   psql -U postgres -c "SELECT pg_promote();"
 ```
 Check that the standby is now the primary
 ```shell
-docker exec -it postgres-streaming-standby \
+docker exec -it postgres-replication-streaming-standby \
   psql -U postgres -c "SELECT pg_is_in_recovery();"
 ```
 # Cleanup
 ```shell
 docker compose --profile standby --profile primary down --volumes
-docker volume rm postgres-streaming-standby-pgdata
+docker volume rm postgres-replication-streaming-standby-pgdata
 ```
