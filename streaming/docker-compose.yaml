@@ -2,40 +2,48 @@ services:
   primary:
     build:
       target: primary
-    container_name: streaming-primary
+    container_name: postgres-streaming-primary
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: primary
     volumes:
-      - primary-pgdata:/var/lib/postgresql/data
       - archiver:/archiver
+      - primary-pgdata:/var/lib/postgresql/data
       - ./scripts/init-primary.sh:/docker-entrypoint-initdb.d/init-primary.sh
     command: [ "-c", "config_file=/etc/postgresql/postgresql.primary.conf", "-c", "hba_file=/etc/postgresql/pg_hba.primary.conf" ]
     healthcheck:
         test: ["CMD-SHELL", "pg_isready -U postgres"]
         timeout: 5s
         retries: 5
+        start_period: 5s
+    profiles:
+      - primary
 
-  pgadmin:
-    image: dpage/pgadmin4:7.8
-    container_name: streaming-pgadmin
+  standby:
+    build:
+      target: standby
+    container_name: postgres-streaming-standby
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:8083:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: example@mail.com
-      PGADMIN_DEFAULT_PASSWORD: example
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    depends_on:
-      primary:
-        condition: service_healthy
+      - standby-pgdata:/var/lib/postgresql/data
+      - archiver:/archiver
+    command: [ "-c", "config_file=/etc/postgresql/postgresql.standby.conf"]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    profiles:
+      - standby
+
 volumes:
-  primary-pgdata:
   archiver:
-    name: postgres-streaming-archiver
-  pgadmin-data:
+  primary-pgdata:
+  standby-pgdata:
+    name: postgres-streaming-standby-pgdata
+    external: true
 
 networks:
     default:
-        name: postgres-streaming-network
+        name: postgres-replication-network
+        external: true

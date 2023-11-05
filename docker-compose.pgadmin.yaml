@@ -1,0 +1,20 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4:7.8
+    container_name: streaming-pgadmin
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8083:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: example@mail.com
+      PGADMIN_DEFAULT_PASSWORD: example
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+
+volumes:
+    pgadmin-data:
+
+networks:
+    default:
+        name: postgres-replication-network
