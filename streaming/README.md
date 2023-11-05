@@ -31,6 +31,7 @@ docker run \
           --write-recovery-conf \
           --wal-method=stream \
           --checkpoint=fast \
+          --slot=replicator_slot \
           --verbose \
           --host=primary \
           --port=5432 \
@@ -52,6 +53,21 @@ docker run \
     --health-start-period 10s \
     streaming-standby \
       -c "config_file=/etc/postgresql/postgresql.standby.conf"
+```
+## Fail-over
+Stop the primary
+```shell
+docker container stop streaming-primary
+```
+Promote the standby (exec as `postgres` user)
+```shell
+docker exec -it streaming-standby \
+  psql -U postgres -c "SELECT pg_promote();"
+```
+Check that the standby is now the primary
+```shell
+docker exec -it streaming-standby \
+  psql -U postgres -c "SELECT pg_is_in_recovery();"
 ```
 # Cleanup
 ```shell
