@@ -1,7 +1,7 @@
 services:
   pgadmin:
     image: dpage/pgadmin4:7.8
-    container_name: streaming-pgadmin
+    container_name: postgres-replication-pgadmin
     restart: unless-stopped
     ports:
       - "127.0.0.1:8083:80"

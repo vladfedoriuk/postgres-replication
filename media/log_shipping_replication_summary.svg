@@ -1,0 +1,17 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1197.5167236328125 611.6666666666642" width="1197.5167236328125" height="611.6666666666642">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style class="style-fonts">
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+    </style>
+    
+  </defs>
+  <g transform="translate(155 10) rotate(0 498.46296296295986 36.66666666666606)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="58.66666666666637px" fill="#1e1e1e" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">Log-shipping / streaming replication</text></g><g transform="translate(10 203.33333333332848) rotate(0 588.7583618164062 22.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="36px" fill="#1e1e1e" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">1. Only possible to replicate between the save PostreSQL versions</text></g><g transform="translate(301.6666666666715 286.66666666666424) rotate(0 296.04998779296875 22.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="36px" fill="#e03131" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">e.g. cannot replicate Pg14 to Pg11</text></g><g transform="translate(10.000000000003638 396.66666666666424) rotate(0 142.5500030517578 22.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="36px" fill="#1e1e1e" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">2. All or nothing</text></g><g transform="translate(200.00000000000364 479.99999999999636) rotate(0 464.1833190917969 22.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="36px" fill="#e03131" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">Cannot replicate only selected databases or tables</text></g><g transform="translate(201.66666666666424 556.6666666666642) rotate(0 343.07501220703125 22.5)"><text x="0" y="0" font-family="Virgil, Segoe UI Emoji" font-size="36px" fill="#e03131" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">Standby is a complete copy of primary.</text></g></svg>
