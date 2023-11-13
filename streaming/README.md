@@ -7,6 +7,11 @@ to store the archived WAL files.
 What is more, the `stanby` will be connected to the `primary` over TCP
 to facilitate the streaming replication.
 
+## Cleanup
+```shell
+docker compose --profile standby --profile primary down --volumes
+docker volume rm postgres-replication-streaming-standby-pgdata
+```
 ## Setup
 
 First, we need to create a volume for the standby `pgdata`:
@@ -150,7 +155,7 @@ Check that the data is there:
 docker exec -it postgres-replication-streaming-standby \
   psql -U postgres -c "SELECT * FROM test_table;"
 ```
-# Cleanup
+#3 Cleanup
 ```shell
 docker compose --profile standby --profile primary down --volumes
 docker volume rm postgres-replication-streaming-standby-pgdata

@@ -1,4 +1,8 @@
 # Logical Replication
+## Cleanup
+```shell
+docker compose down --volumes
+```
 ## Setup
 First, we need spin up the `primary` and `standby` containers:
 ```shell
@@ -97,7 +101,7 @@ docker exec -it postgres-replication-logical-standby \
   psql -U postgres -c "SELECT * FROM test;"
 ```
 
-# Cleanup
+## Cleanup
 ```shell
 docker compose down --volumes
 ```
