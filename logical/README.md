@@ -5,7 +5,7 @@ First, we need spin up the `primary` and `standby` containers:
 docker compose up
 ```
 Verify that the primary uses the correct configuration and
-the `hba.conf` file is configured correctly:
+the `postgresql.conf` file is configured correctly:
 ```shell
 docker exec -it postgres-replication-logical-primary \
   psql -U postgres -c "SHOW config_file;"
@@ -71,7 +71,7 @@ docker exec -it postgres-replication-logical-standby \
   psql -U postgres -c "SELECT * FROM test;"
 ```
 
-Lets `alter` the oublication to only publish `b` values which are equal to `b`:
+Lets `alter` the publication to only publish `b` values which are equal to `b`:
 ```shell
 docker exec -it postgres-replication-logical-primary \
   psql -U postgres -c "ALTER PUBLICATION test_pub SET TABLE test(id, b) WHERE (b = 'b');"
