@@ -1,6 +1,10 @@
 # postgres-replication
 A repo showcasing different PostgreSQL replication configurations using Docker
 
+## Presentation
+
+https://docs.google.com/presentation/d/1OFtQ6huAPjrbpEu7oIEx9qnzeF8-pCS9Qmbn6YmNHYQ/edit?usp=sharing
+
 ## PgAdmin
 
 To run `pgAdmin`, run the following command:
