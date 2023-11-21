@@ -14,11 +14,12 @@ the `postgresql.conf` file is configured correctly:
 docker exec -it postgres-replication-logical-primary \
   psql -U postgres -c "SHOW config_file;"
 ```
-Show the pass to the `pg_hba.conf` file:
+Show the path to the `pg_hba.conf` file:
 ```shell
 docker exec -it postgres-replication-logical-primary \
   psql -U postgres -c "SHOW hba_file;"
 ```
+Verify the `pg_hba.conf` rules:
 ```shell
 docker exec -it postgres-replication-logical-primary \
  psql -U postgres -c "SELECT * FROM pg_hba_file_rules;"

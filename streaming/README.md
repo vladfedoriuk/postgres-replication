@@ -26,17 +26,17 @@ Let's boot up the `primary`.
 ```shell
 docker compose --profile primary up
 ```
-Verify that the primary uses the correct configuration and 
-the `hba.conf` file is configured correctly:
+Verify that the primary uses the correct configuration host based authentication settings
 ```shell
 docker exec -it postgres-replication-streaming-primary \
   psql -U postgres -c "SHOW config_file;"
 ```
-Show the pass to the `pg_hba.conf` file:
+Show the path to the `pg_hba.conf` file:
 ```shell
 docker exec -it postgres-replication-streaming-primary \
   psql -U postgres -c "SHOW hba_file;"
 ```
+Show the `pg_hba.conf` rules:
 ```shell
 docker exec -it postgres-replication-streaming-primary \
  psql -U postgres -c "SELECT * FROM pg_hba_file_rules;"
@@ -155,7 +155,7 @@ Check that the data is there:
 docker exec -it postgres-replication-streaming-standby \
   psql -U postgres -c "SELECT * FROM test_table;"
 ```
-#3 Cleanup
+## Cleanup
 ```shell
 docker compose --profile standby --profile primary down --volumes
 docker volume rm postgres-replication-streaming-standby-pgdata

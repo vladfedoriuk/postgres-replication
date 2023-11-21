@@ -1,1 +1,0 @@
-# Write Ahead Logging
